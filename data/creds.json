@@ -1,0 +1,13 @@
+[
+    {
+        "host": "100.83.99.144",
+        "user": "user",
+        "password": "user",
+        "database": "hotel_stuff"
+    },
+    {
+        "host": "localhost",
+        "user": "root",
+        "password": "root"
+    }
+]
