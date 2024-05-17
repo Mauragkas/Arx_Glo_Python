@@ -14,7 +14,7 @@ def connect_to_db() -> mysql.connector.connection.MySQLConnection:    # Load dat
     with open(DATA_FOLDER + 'creds.json') as f:
         config = json.load(f)
     try:
-        conn = mysql.connector.connect(**config[0])
+        conn = mysql.connector.connect(**config)
         print('Connected to database.')
         return conn
     except mysql.connector.Error as e:
@@ -190,7 +190,17 @@ def get_booking_by_month(cursor: mysql.connector.cursor.MySQLCursor) -> list:
     cursor.execute('''
         SELECT hotel, arrival_date_month, COUNT(*) AS count_of_rows
         FROM hotel_booking
-        WHERE is_cancelled = 0
+        # WHERE is_cancelled = 0
+        GROUP BY hotel, arrival_date_month;
+    ''')
+    return cursor.fetchall()
+
+def get_cancelled_booking_by_month(cursor: mysql.connector.cursor.MySQLCursor) -> list:
+    print('Getting booking by month...')
+    cursor.execute('''
+        SELECT hotel, arrival_date_month, COUNT(*) AS count_of_rows
+        FROM hotel_booking
+        WHERE is_cancelled = 1
         GROUP BY hotel, arrival_date_month;
     ''')
     return cursor.fetchall()
@@ -216,7 +226,7 @@ def get_booking_distribution_channels(cursor: mysql.connector.cursor.MySQLCursor
     return cursor.fetchall()
 
 # Additional Insights:
-def ge_room_type_preferences(cursor: mysql.connector.cursor.MySQLCursor) -> list:
+def get_room_type_preferences(cursor: mysql.connector.cursor.MySQLCursor) -> list:
     print('Getting room type preferences...')
     cursor.execute('''
         SELECT hotel, reserved_room_type, COUNT(*) AS count_of_rows

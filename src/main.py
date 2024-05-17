@@ -42,8 +42,39 @@ def main():
         print()
 
         # Plot bookings per month
-        # print(db.get_booking_by_month(cur))
-        ps.plot_bookings_by_season(db.get_booking_by_month(cur))
+        ps.plot_bookings_by_season(db.get_booking_by_month(cur), db.get_cancelled_booking_by_month(cur))
+        print()
+
+        # Plot market segment distribution
+        ps.plot_bookings_by_market_segment(db.get_booking_market_segments(cur))
+        print()
+
+        # Plot distribution channel distribution
+        ps.plot_bookings_by_distribution_channel(db.get_booking_distribution_channels(cur))
+        print()
+
+        # Plot nightly stay rates
+        ps.plot_nightly_stay_rates(db.get_nightly_stay_rates(cur), db.get_mixed_stay_distributions(cur))
+        print()
+
+        # Plot room type preferences
+        ps.plot_room_type_preferences(db.get_room_type_preferences(cur))
+        print()
+
+        # Plot booking status distribution
+        ps.plot_meal_preferences(db.get_meal_preferences(cur))
+        print()
+
+        # Plot special requests distribution
+        ps.plot_special_requests(db.get_special_requests(cur))
+        print()
+
+        # Plot demographics
+        ps.plot_demographics(db.get_demographics(cur))
+        print()
+
+        # Plot Single, Couple, Family, Group
+        ps.plot_single_couple_family_bookings(db.get_single_couple_family_bookings(cur))
         print()
 
         # ps.show_plot()
@@ -51,6 +82,7 @@ def main():
         print(e)
         return
     finally:
+        print('All done!')
         conn.close()
 
 if __name__ == "__main__":
