@@ -196,7 +196,7 @@ def get_booking_by_month(cursor: mysql.connector.cursor.MySQLCursor) -> list:
     return cursor.fetchall()
 
 def get_cancelled_booking_by_month(cursor: mysql.connector.cursor.MySQLCursor) -> list:
-    print('Getting booking by month...')
+    print('Getting cancelled booking by month...')
     cursor.execute('''
         SELECT hotel, arrival_date_month, COUNT(*) AS count_of_rows
         FROM hotel_booking

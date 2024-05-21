@@ -5,25 +5,26 @@ import plot_stuff as ps
 
 DATA_FOLDER = './data/'
 
+try:
+    conn = db.connect_to_db()
+    cur = conn.cursor()
+except Exception as e:
+    print(e)
+    exit(1)
+
 def setup():
     file_path = DATA_FOLDER + 'hotel_booking.csv'
     ds.learn_more_about_data(file_path)
     try:
-        conn = db.connect_to_db()
-        cursor = conn.cursor()
-        db.init_db(cursor)
-        db.load_data(cursor=cursor, file_path=file_path)
+        db.init_db(cur)
+        db.load_data(cursor=cur, file_path=file_path)
         conn.commit()
     except Exception as e:
         print(e)
-    finally:
-        conn.close()
 
 def main():
     try:
-        conn = db.connect_to_db()
-        cur = conn.cursor()
-        print()
+        print('-' * 50)
 
         # Plot bookings vs. cancellations
         ps.plot_bookings(db.get_total_bookings(cur), db.get_cancellations_rate(cur))
@@ -79,11 +80,9 @@ def main():
 
         # ps.show_plot()
     except Exception as e:
-        print(e)
-        return
-    finally:
-        print('All done!')
+        print(f"An error occurred in main: {e}")
         conn.close()
+        exit(1)
 
 if __name__ == "__main__":
     try:
@@ -92,3 +91,6 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print('Exiting...')
         exit(0)
+    finally:
+        print('All done!')
+        conn.close()
