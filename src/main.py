@@ -2,8 +2,10 @@
 import db_stuff as db
 import data_stuff as ds
 import plot_stuff as ps
+import gui_stuff as gui
 
 DATA_FOLDER = './data/'
+file_path = DATA_FOLDER + 'hotel_booking.csv'
 
 try:
     conn = db.connect_to_db()
@@ -13,7 +15,6 @@ except Exception as e:
     exit(1)
 
 def setup():
-    file_path = DATA_FOLDER + 'hotel_booking.csv'
     ds.learn_more_about_data(file_path)
     try:
         db.init_db(cur)
@@ -23,74 +24,74 @@ def setup():
         print(e)
 
 def main():
-    try:
-        print('-' * 50)
+    print('-' * 50)
 
-        # Plot bookings vs. cancellations
-        ps.plot_bookings(db.get_total_bookings(cur), db.get_cancellations_rate(cur))
-        print()
+    plot_buttons = {
+        'Bookings vs. Cancellations': lambda: (
+            arg1 := db.get_total_bookings(cur),
+            arg2 := db.get_cancellations_rate(cur),
+            ps.plot_bookings(arg1, arg2)
+        ),
+        'Average Lead Time': lambda: (
+            arg1 := db.get_avg_lead_time(cur),
+            ps.plot_avg_lead_time(arg1)
+        ),
+        'Average Length of Stay': lambda: (
+            arg1 := db.get_avg_stay_duration(cur),
+            ps.plot_avg_length_of_stay(arg1)
+        ),
+        'Revenue': lambda: (
+            arg1 := db.get_revenue_per_year(cur),
+            ps.plot_revenue(arg1)
+        ),
+        'Bookings by Season': lambda: (
+            arg1 := db.get_booking_by_month(cur),
+            arg2 := db.get_cancelled_booking_by_month(cur),
+            ps.plot_bookings_by_season(arg1, arg2)
+        ),
+        'Market Segment Distribution': lambda: (
+            arg1 := db.get_booking_market_segments(cur),
+            ps.plot_bookings_by_market_segment(arg1)
+        ),
+        'Distribution Channel Distribution': lambda: (
+            arg1 := db.get_booking_distribution_channels(cur),
+            ps.plot_bookings_by_distribution_channel(arg1)
+        ),
+        'Nightly Stay Rates': lambda: (
+            arg1 := db.get_nightly_stay_rates(cur),
+            arg2 := db.get_mixed_stay_distributions(cur),
+            ps.plot_nightly_stay_rates(arg1, arg2)
+        ),
+        'Room Type Preferences': lambda: (
+            arg1 := db.get_room_type_preferences(cur),
+            ps.plot_room_type_preferences(arg1)
+        ),
+        'Meal Preferences': lambda: (
+            arg1 := db.get_meal_preferences(cur),
+            ps.plot_meal_preferences(arg1)
+        ),
+        'Special Requests': lambda: (
+            arg1 := db.get_special_requests(cur),
+            ps.plot_special_requests(arg1)
+        ),
+        'Demographics': lambda: (
+            arg1 := db.get_demographics(cur),
+            ps.plot_demographics(arg1)
+        ),
+        'Single, Couple, Family, Group': lambda: (
+            arg1 := db.get_single_couple_family_bookings(cur),
+            ps.plot_single_couple_family_bookings(arg1)
+        ),
+    }
 
-        # Plot average lead times
-        ps.plot_avg_lead_time(db.get_avg_lead_time(cur))
-        print()
-
-        # Plot average length of stay
-        ps.plot_avg_length_of_stay(db.get_avg_stay_duration(cur))
-        print()
-
-        # Plot revenue
-        ps.plot_revenue(db.get_revenue_per_year(cur))
-        print()
-
-        # Plot bookings per month
-        ps.plot_bookings_by_season(db.get_booking_by_month(cur), db.get_cancelled_booking_by_month(cur))
-        print()
-
-        # Plot market segment distribution
-        ps.plot_bookings_by_market_segment(db.get_booking_market_segments(cur))
-        print()
-
-        # Plot distribution channel distribution
-        ps.plot_bookings_by_distribution_channel(db.get_booking_distribution_channels(cur))
-        print()
-
-        # Plot nightly stay rates
-        ps.plot_nightly_stay_rates(db.get_nightly_stay_rates(cur), db.get_mixed_stay_distributions(cur))
-        print()
-
-        # Plot room type preferences
-        ps.plot_room_type_preferences(db.get_room_type_preferences(cur))
-        print()
-
-        # Plot booking status distribution
-        ps.plot_meal_preferences(db.get_meal_preferences(cur))
-        print()
-
-        # Plot special requests distribution
-        ps.plot_special_requests(db.get_special_requests(cur))
-        print()
-
-        # Plot demographics
-        ps.plot_demographics(db.get_demographics(cur))
-        print()
-
-        # Plot Single, Couple, Family, Group
-        ps.plot_single_couple_family_bookings(db.get_single_couple_family_bookings(cur))
-        print()
-
-        # ps.show_plot()
-    except Exception as e:
-        print(f"An error occurred in main: {e}")
-        conn.close()
-        exit(1)
+    gui.window(plot_buttons)
 
 if __name__ == "__main__":
     try:
         # setup()
         main()
     except KeyboardInterrupt:
-        print('Exiting...')
+        print('KeyboardInterrupt')
         exit(0)
     finally:
-        print('All done!')
         conn.close()
