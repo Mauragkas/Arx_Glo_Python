@@ -98,6 +98,7 @@ def get_length(cursor: mysql.connector.cursor.MySQLCursor) -> int:
 
 # Essential Booking Metrics Queries:
 def get_total_bookings(cursor: mysql.connector.cursor.MySQLCursor) -> list:
+    print('Getting total bookings...')
     cursor.execute('SELECT hotel, COUNT(*) AS count_of_rows FROM hotel_booking GROUP BY hotel')
     return cursor.fetchall()
 
