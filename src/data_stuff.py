@@ -1,7 +1,9 @@
 import csv
 import json
+from decimal import Decimal 
 
 DATA_FOLDER = './data/'
+CSV_FILE_FOLDER = './csv_files/'
 
 def try_convert_type(value):
     if not value:
@@ -37,3 +39,18 @@ def learn_more_about_data(file_path: str):
                 data_types_and_set[i]['set'] = 'NOT A SET'
             f.write(f'{header[i]}: {data_types_and_set[i]}\n')
     print('Data types written to data_types.txt')
+
+def save_as_csv(filename, args: list):
+    file_path = CSV_FILE_FOLDER + filename
+    with open(file_path, 'w', newline='') as f:
+        writer = csv.writer(f)
+        for arg in args:
+            for tup in arg:
+                modified_row = list(tup)  # Convert tuple to a list
+                for i, item in enumerate(modified_row):
+                    if isinstance(item, set):  # Safer type check
+                        modified_row[i] = ', '.join(item)  # Convert set to string correctly
+                    elif isinstance(item, Decimal):
+                        modified_row[i] = float(item)  # Convert Decimal to float
+                writer.writerow(modified_row)
+    print(f'CSV file saved as {file_path}')  # Show full path in case of issues
