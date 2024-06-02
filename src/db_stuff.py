@@ -7,6 +7,7 @@ except ImportError:
     import mysql.connector
 import json
 import csv
+from decimal import Decimal
 
 DATA_FOLDER = './data/'
 
@@ -280,3 +281,28 @@ def get_single_couple_family_bookings(cursor: mysql.connector.cursor.MySQLCursor
         GROUP BY hotel;
     ''')
     return cursor.fetchall()
+
+def insert_into_table(cursor: mysql.connector.cursor.MySQLCursor, conn: mysql.connector.connection.MySQLConnection, table: str, data: list):
+    for row in data:
+        row_values = []
+        for item in row:
+            if isinstance(item, set):
+                row_values.append(','.join(item))  # Convert sets to comma-separated strings
+            elif isinstance(item, Decimal):
+                row_values.append(float(item))  # Convert Decimal to float
+            else:
+                row_values.append(item) 
+        
+        placeholders = ', '.join(['%s'] * len(row_values))  # Create placeholders
+        procedure_name = f"insert_or_update_{table}"  # Construct the procedure name
+        query = f"CALL {procedure_name}({placeholders})"  # Construct the query
+
+        try:
+            # print(row_values)
+            cursor.execute(query, row_values)
+        except mysql.connector.Error as e:
+            print(f"\033[91mError inserting row: {e}\033[0m")
+            print(row_values)
+    conn.commit()  # Commit changes to the database
+    print(f'Data inserted into {table}.')
+

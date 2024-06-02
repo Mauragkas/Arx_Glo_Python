@@ -39,9 +39,9 @@ def window(plot_buttons):
     # Create buttons
     for i, (text, command) in enumerate(plot_buttons.items()):
         # Wrap the command in a lambda to call show_plot after the plotting function
-        btn_command = lambda cmd=command: (cmd(), ps.show_plot())  
+        btn_command = lambda cmd=command: (cmd(), ps.show_plot(), print("--------------"))
         ttk.Button(button_frame, text=text, command=btn_command).grid(row=i, column=0, sticky=(tk.W, tk.E))
-
+    
     # Close button to exit the application
     close_button = ttk.Button(root, text="Close", command=root.quit)
     close_button.grid(row=1, column=0, pady=10, sticky=(tk.W, tk.E))

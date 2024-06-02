@@ -1,118 +1,365 @@
--- SELECT hotel, (COUNT(CASE WHEN is_cancelled = 1 THEN 1 END)) AS cancellations, (COUNT(CASE WHEN is_cancelled = 1 THEN 1 END) * 100.0 / COUNT(*)) AS cancellation_rate
--- FROM hotel_booking
--- GROUP BY hotel;
+CREATE TABLE if not exists total_bookings (
+    hotel VARCHAR(255),  
+    value1 INT,
+    unique (hotel)
+);
 
--- SELECT lead_time, COUNT(*) AS count_of_rows FROM hotel_booking 
--- where is_cancelled = 0 GROUP BY lead_time;
+DELIMITER //
 
--- SELECT hotel, AVG(lead_time) AS avg_lead_time
---         FROM hotel_booking 
---         WHERE is_cancelled = 0
---         GROUP BY hotel;
+CREATE PROCEDURE insert_or_update_total_bookings(
+    IN p_hotel VARCHAR(255),
+    IN p_value1 INT
+)
+BEGIN
+    INSERT INTO total_bookings (hotel, value1)
+    VALUES (p_hotel, p_value1)
+    ON DUPLICATE KEY UPDATE
+        value1 = p_value1;
+END //
 
--- SELECT hotel, AVG(stays_in_weekend_nights + stays_in_week_nights) AS avg_length_of_stay
---         FROM hotel_booking 
---         WHERE is_cancelled = 0
---         GROUP BY hotel;
+DELIMITER ;
 
--- SHOW create table hotel_booking;
+CREATE TABLE if not exists cancellations_rate (
+    hotel VARCHAR(255),  
+    value1 INT,
+    value2 DECIMAL(10, 5),
+    unique (hotel)
+);
 
--- SELECT hotel, 
---        (COUNT(CASE WHEN (stays_in_weekend_nights = 0 AND stays_in_week_nights > 0) THEN 1 END) * 100.0 / COUNT(*)) AS week_nights_rate,
---        (COUNT(CASE WHEN (stays_in_weekend_nights > 0 AND stays_in_week_nights = 0) THEN 1 END) * 100.0 / COUNT(*)) AS weekend_nights_rate,
---        (COUNT(CASE WHEN (stays_in_weekend_nights > 0 AND stays_in_week_nights > 0) THEN 1 END) * 100.0 / COUNT(*)) AS both_nights_rate
--- FROM hotel_booking
--- WHERE is_cancelled = 0
--- GROUP BY hotel;
+DELIMITER //
 
--- WITH total_mixed_bookings AS (
---     SELECT COUNT(*) AS total_count
---     FROM hotel_booking
---     WHERE is_cancelled = 0 
---         AND stays_in_weekend_nights > 0 
---         AND stays_in_week_nights > 0
--- )
--- SELECT
---     (COUNT(CASE WHEN stays_in_weekend_nights = 1 AND stays_in_week_nights > 0 THEN 1 END) * 100.0 / total_count) AS mix_1,
---     (COUNT(CASE WHEN stays_in_weekend_nights = 2 AND stays_in_week_nights > 0 THEN 1 END) * 100.0 / total_count) AS mix_2,
---     (COUNT(CASE WHEN stays_in_weekend_nights > 2 AND stays_in_week_nights > 0 THEN 1 END) * 100.0 / total_count) AS mix_3
--- FROM hotel_booking, total_mixed_bookings
--- WHERE is_cancelled = 0;
+CREATE PROCEDURE insert_or_update_cancellations_rate(
+    IN p_hotel VARCHAR(255),
+    IN p_value1 INT,
+    IN p_value2 DECIMAL(10, 5)
+)
+BEGIN
+    INSERT INTO cancellations_rate (hotel, value1, value2)
+    VALUES (p_hotel, p_value1, p_value2)
+    ON DUPLICATE KEY UPDATE
+        value1 = p_value1,
+        value2 = p_value2;
+END //
 
--- SELECT arrival_date_year, ROUND(SUM(adr), 2) AS total_revenue
--- FROM hotel_booking
--- WHERE is_cancelled = 0
--- GROUP BY arrival_date_year;
+DELIMITER ;
 
--- SELECT adr from hotel_booking where is_cancelled = 0 and adr > 0 order by adr ASC;
+CREATE TABLE if not exists avg_lead_time(
+    hotel VARCHAR(255),  
+    value1 DECIMAL(10, 5),
+    unique (hotel)
+);
 
--- SELECT arrival_date_year, ROUND(SUM(adr * (stays_in_weekend_nights + stays_in_week_nights)), 2) AS revenue
---         FROM hotel_booking
---         WHERE is_cancelled = 0
---         GROUP BY arrival_date_year;
+DELIMITER //
 
--- SELECT hotel,
---        (COUNT(CASE WHEN is_repeated_guest = 1 THEN 1 END) * 100.0 / COUNT(*)) AS repeat_guest_rate
--- FROM hotel_booking
--- WHERE is_cancelled = 0
--- GROUP BY hotel;
+CREATE PROCEDURE insert_or_update_avg_lead_time(
+    IN p_hotel VARCHAR(255),
+    IN p_value1 DECIMAL(10, 5)
+)
+BEGIN
+    INSERT INTO avg_lead_time (hotel, value1)
+    VALUES (p_hotel, p_value1)
+    ON DUPLICATE KEY UPDATE
+        value1 = p_value1;
+END //
 
--- SELECT hotel, arrival_date_month, COUNT(*) AS count_of_rows
---         FROM hotel_booking
---         WHERE is_cancelled = 0
---         GROUP BY hotel, arrival_date_month;
+DELIMITER ;
 
--- SELECT hotel, market_segment, COUNT(*) AS count_of_rows
---         FROM hotel_booking
---         WHERE is_cancelled = 0
---         GROUP BY hotel, market_segment;
+CREATE TABLE if not exists avg_stay_duration(
+    hotel VARCHAR(255),  
+    value1 DECIMAL(10, 5),
+    unique (hotel)
+);
 
--- SELECT hotel, distribution_channel, COUNT(*) AS count_of_rows
---         FROM hotel_booking
---         WHERE is_cancelled = 0
---         GROUP BY hotel, distribution_channel;
+DELIMITER //
 
--- SELECT hotel, reserved_room_type, COUNT(*) AS count_of_rows
---         FROM hotel_booking
---         WHERE is_cancelled = 0
---         GROUP BY hotel, FIELD(reserved_room_type, 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'L', 'P')
+CREATE PROCEDURE insert_or_update_avg_stay_duration(
+    IN p_hotel VARCHAR(255),
+    IN p_value1 DECIMAL(10, 5)
+)
+BEGIN
+    INSERT INTO avg_stay_duration (hotel, value1)
+    VALUES (p_hotel, p_value1)
+    ON DUPLICATE KEY UPDATE
+        value1 = p_value1;
+END //
 
--- NA TO KSANA DOOOO AUTO
--- SELECT hotel, reserved_room_type, COUNT(*) AS bookings
--- FROM hotel_booking
--- WHERE is_cancelled = 0
--- GROUP BY hotel, reserved_room_type;
+DELIMITER ;
 
--- SELECT hotel, reserved_room_type, assigned_room_type, COUNT(*) AS bookings
--- FROM hotel_booking
--- WHERE is_cancelled = 0
--- AND reserved_room_type != assigned_room_type
--- GROUP BY hotel, reserved_room_type, assigned_room_type;
+CREATE TABLE if not exists revenue_per_year(
+    year INT,
+    value1 DECIMAL,
+    unique (year)
+);
 
--- SELECT hotel, meal, COUNT(*) AS count_of_rows
---         FROM hotel_booking
---         WHERE is_cancelled = 0
---         GROUP BY hotel, meal;
+DELIMITER //
 
--- SELECT hotel, total_of_special_requests, COUNT(*) AS count_of_rows,
---        (COUNT(*) * 100.0 / (SELECT COUNT(*) FROM hotel_booking WHERE is_cancelled = 0)) AS percentage
--- FROM hotel_booking
--- WHERE is_cancelled = 0
--- GROUP BY hotel, total_of_special_requests;
+CREATE PROCEDURE insert_or_update_revenue_per_year(
+    IN p_year INT,
+    IN p_value1 DECIMAL
+)
+BEGIN
+    INSERT INTO revenue_per_year (year, value1)
+    VALUES (p_year, p_value1)
+    ON DUPLICATE KEY UPDATE
+        value1 = p_value1;
+END //
 
--- SELECT hotel, days_in_waiting_list, COUNT(*) AS count_of_rows
---         FROM hotel_booking
---         WHERE is_cancelled = 0
---         GROUP BY hotel, days_in_waiting_list;
--- SELECT hotel, customer_type, COUNT(*) AS count_of_rows
---         FROM hotel_booking
---         WHERE is_cancelled = 0
---         GROUP BY hotel, customer_type;
+DELIMITER ;
 
--- SELECT hotel,
---     (COUNT(CASE WHEN adults > 0 AND (children > 0 or babies > 0) THEN 1 END) * 100.0 / COUNT(*)) AS family_rate,
---     (COUNT(CASE WHEN adults = 1 AND (children = 0 and babies = 0) THEN 1 END) * 100.0 / COUNT(*)) AS single_rate,
---     (COUNT(CASE WHEN adults = 2 AND (children = 0 and babies = 0) THEN 1 END) * 100.0 / COUNT(*)) AS couple_rate
--- FROM hotel_booking
--- WHERE is_cancelled = 0
--- GROUP BY hotel;
+CREATE TABLE if not exists bookings_by_month(
+    hotel VARCHAR(255),
+    month VARCHAR(255),
+    value1 INT,
+    unique (hotel, month)
+);
+
+DELIMITER //
+
+CREATE PROCEDURE insert_or_update_bookings_by_month(
+    IN p_hotel VARCHAR(255),
+    IN p_month VARCHAR(255),
+    IN p_value1 INT
+)
+BEGIN
+    INSERT INTO bookings_by_month (hotel, month, value1)
+    VALUES (p_hotel, p_month, p_value1)
+    ON DUPLICATE KEY UPDATE
+        value1 = p_value1;
+END //
+
+DELIMITER ;
+
+CREATE TABLE if not exists cancelled_bookings_by_month(
+    hotel VARCHAR(255),
+    month VARCHAR(255),
+    value1 INT,
+    unique (hotel, month)
+);
+
+DELIMITER //
+
+CREATE PROCEDURE insert_or_update_cancelled_bookings_by_month(
+    IN p_hotel VARCHAR(255),
+    IN p_month VARCHAR(255),
+    IN p_value1 INT
+)
+BEGIN
+    INSERT INTO cancelled_bookings_by_month (hotel, month, value1)
+    VALUES (p_hotel, p_month, p_value1)
+    ON DUPLICATE KEY UPDATE
+        value1 = p_value1;
+END //
+
+DELIMITER ;
+
+CREATE TABLE if not exists market_segment_distribution(
+    hotel VARCHAR(255),
+    string VARCHAR(255),
+    value1 INT,
+    unique (hotel, string)
+);
+
+DELIMITER //
+
+CREATE PROCEDURE insert_or_update_market_segment_distribution(
+    IN p_hotel VARCHAR(255),
+    IN string VARCHAR(255),
+    IN p_value1 INT
+)
+BEGIN
+    INSERT INTO market_segment_distribution (hotel, string, value1)
+    VALUES (p_hotel, string, p_value1)
+    ON DUPLICATE KEY UPDATE
+        value1 = p_value1;
+END //
+
+DELIMITER ;
+
+CREATE TABLE if not exists distribution_channel_distribution(
+    hotel VARCHAR(255),
+    string VARCHAR(255),
+    value1 INT,
+    unique (hotel, string)
+);
+
+DELIMITER //
+
+CREATE PROCEDURE insert_or_update_distribution_channel_distribution(
+    IN p_hotel VARCHAR(255),
+    IN string VARCHAR(255),
+    IN p_value1 INT
+)
+BEGIN
+    INSERT INTO distribution_channel_distribution (hotel, string, value1)
+    VALUES (p_hotel, string, p_value1)
+    ON DUPLICATE KEY UPDATE
+        value1 = p_value1;
+END //
+
+DELIMITER ;
+
+CREATE TABLE if not exists nightly_stay_rates(
+    hotel VARCHAR(255),
+    value1 DECIMAL,
+    value2 DECIMAL,
+    value3 DECIMAL,
+    unique (hotel)
+);
+
+DELIMITER //
+
+CREATE PROCEDURE insert_or_update_nightly_stay_rates(
+    IN p_hotel VARCHAR(255),
+    IN p_value1 DECIMAL,
+    IN p_value2 DECIMAL,
+    IN p_value3 DECIMAL
+)
+BEGIN
+    INSERT INTO nightly_stay_rates (hotel, value1, value2, value3)
+    VALUES (p_hotel, p_value1, p_value2, p_value3)
+    ON DUPLICATE KEY UPDATE
+        value1 = p_value1,
+        value2 = p_value2,
+        value3 = p_value3;
+END //
+
+DELIMITER ;
+
+CREATE TABLE if not exists room_type_preferences(
+    hotel VARCHAR(255),
+    string VARCHAR(255),
+    value1 INT,
+    unique (hotel, string)
+);
+
+DELIMITER //
+
+CREATE PROCEDURE insert_or_update_room_type_preferences(
+    IN p_hotel VARCHAR(255),
+    IN string VARCHAR(255),
+    IN p_value1 INT
+)
+BEGIN
+    INSERT INTO room_type_preferences (hotel, string, value1)
+    VALUES (p_hotel, string, p_value1)
+    ON DUPLICATE KEY UPDATE
+        value1 = p_value1;
+END //
+
+DELIMITER ;
+
+CREATE TABLE if not exists meal_preferences(
+    hotel VARCHAR(255),
+    string VARCHAR(255),
+    value1 INT,
+    unique (hotel, string)
+);
+
+DELIMITER //
+
+CREATE PROCEDURE insert_or_update_meal_preferences(
+    IN p_hotel VARCHAR(255),
+    IN string VARCHAR(255),
+    IN p_value1 INT
+)
+BEGIN
+    INSERT INTO meal_preferences (hotel, string, value1)
+    VALUES (p_hotel, string, p_value1)
+    ON DUPLICATE KEY UPDATE
+        value1 = p_value1;
+END //
+
+DELIMITER ;
+
+CREATE TABLE if not exists special_requests(
+    hotel VARCHAR(255),
+    value1 INT,
+    value2 INT,
+    value3 DECIMAL,
+    unique (hotel, value1)
+);
+
+DELIMITER //
+
+CREATE PROCEDURE insert_or_update_special_requests(
+    IN p_hotel VARCHAR(255),
+    IN p_value1 INT,
+    IN p_value2 INT,
+    IN p_value3 DECIMAL
+)
+BEGIN
+    INSERT INTO special_requests (hotel, value1, value2, value3)
+    VALUES (p_hotel, p_value1, p_value2, p_value3)
+    ON DUPLICATE KEY UPDATE
+        value1 = p_value1,
+        value2 = p_value2,
+        value3 = p_value3;
+END //
+
+DELIMITER ;
+
+CREATE TABLE if not exists demographics(
+    hotel VARCHAR(255),
+    string VARCHAR(255),
+    value1 INT,
+    unique (hotel, string)
+);
+
+DELIMITER //
+
+CREATE PROCEDURE insert_or_update_demographics(
+    IN p_hotel VARCHAR(255),
+    IN string VARCHAR(255),
+    IN p_value1 INT
+)
+BEGIN
+    INSERT INTO demographics (hotel, string, value1)
+    VALUES (p_hotel, string, p_value1)
+    ON DUPLICATE KEY UPDATE
+        value1 = p_value1;
+END //
+
+DELIMITER ;
+
+CREATE TABLE if not exists single_couple_family_group(
+    hotel VARCHAR(255),
+    value1 DECIMAL,
+    value2 DECIMAL,
+    value3 DECIMAL,
+    unique (hotel)
+);
+
+DELIMITER //
+
+CREATE PROCEDURE insert_or_update_single_couple_family_group(
+    IN p_hotel VARCHAR(255),
+    IN p_value1 DECIMAL,
+    IN p_value2 DECIMAL,
+    IN p_value3 DECIMAL
+)
+BEGIN
+    INSERT INTO single_couple_family_group (hotel, value1, value2, value3)
+    VALUES (p_hotel, p_value1, p_value2, p_value3)
+    ON DUPLICATE KEY UPDATE
+        value1 = p_value1,
+        value2 = p_value2,
+        value3 = p_value3;
+END //
+
+DELIMITER ;
+
+-- DROP TABLE IF EXISTS cancellations_rate;
+-- DROP TABLE IF EXISTS total_bookings;
+-- DROP TABLE IF EXISTS avg_lead_time;
+-- DROP TABLE IF EXISTS avg_stay_duration;
+-- DROP TABLE IF EXISTS revenue_per_year;
+-- DROP TABLE IF EXISTS bookings_by_month;
+-- DROP TABLE IF EXISTS cancelled_bookings_by_month;
+-- DROP TABLE IF EXISTS market_segment_distribution;
+-- DROP TABLE IF EXISTS distribution_channel_distribution;
+-- DROP TABLE IF EXISTS nightly_stay_rates;
+-- DROP TABLE IF EXISTS room_type_preferences;
+-- DROP TABLE IF EXISTS meal_preferences;
+-- DROP TABLE IF EXISTS special_requests;
+-- DROP TABLE IF EXISTS demographics;
+-- DROP TABLE IF EXISTS single_couple_family_group;

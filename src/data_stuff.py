@@ -53,4 +53,4 @@ def save_as_csv(filename, args: list):
                     elif isinstance(item, Decimal):
                         modified_row[i] = float(item)  # Convert Decimal to float
                 writer.writerow(modified_row)
-    print(f'CSV file saved as {file_path}')  # Show full path in case of issues
+    print('\033[92m' + f'CSV file saved as {file_path}' + '\033[0m')  # Show full path in case of issues
