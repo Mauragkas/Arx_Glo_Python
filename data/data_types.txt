@@ -1,34 +1,34 @@
 hotel: {'types': {<class 'str'>}, 'set': {'Resort Hotel', 'City Hotel'}}
-is_canceled: {'types': {<class 'int'>}, 'set': {'1', '0'}}
+is_canceled: {'types': {<class 'int'>}, 'set': {'0', '1'}}
 lead_time: {'types': {<class 'int'>}, 'set': 'NOT A SET'}
-arrival_date_year: {'types': {<class 'int'>}, 'set': {'2016', '2017', '2015'}}
-arrival_date_month: {'types': {<class 'str'>}, 'set': {'December', 'October', 'November', 'January', 'April', 'July', 'June', 'February', 'August', 'March', 'May', 'September'}}
+arrival_date_year: {'types': {<class 'int'>}, 'set': {'2017', '2015', '2016'}}
+arrival_date_month: {'types': {<class 'str'>}, 'set': {'June', 'January', 'October', 'February', 'April', 'May', 'July', 'March', 'August', 'September', 'December', 'November'}}
 arrival_date_week_number: {'types': {<class 'int'>}, 'set': 'NOT A SET'}
 arrival_date_day_of_month: {'types': {<class 'int'>}, 'set': 'NOT A SET'}
 stays_in_weekend_nights: {'types': {<class 'int'>}, 'set': 'NOT A SET'}
 stays_in_week_nights: {'types': {<class 'int'>}, 'set': 'NOT A SET'}
 adults: {'types': {<class 'int'>}, 'set': 'NOT A SET'}
-children: {'types': {<class 'float'>, <class 'NoneType'>}, 'set': {'', '1.0', '3.0', '2.0', '0.0', '10.0'}}
-babies: {'types': {<class 'int'>}, 'set': {'0', '10', '2', '1', '9'}}
-meal: {'types': {<class 'str'>}, 'set': {'Undefined', 'BB', 'FB', 'HB', 'SC'}}
+children: {'types': {<class 'float'>, <class 'NoneType'>}, 'set': {'', '1.0', '2.0', '0.0', '10.0', '3.0'}}
+babies: {'types': {<class 'int'>}, 'set': {'10', '0', '1', '2', '9'}}
+meal: {'types': {<class 'str'>}, 'set': {'BB', 'Undefined', 'SC', 'FB', 'HB'}}
 country: {'types': {<class 'NoneType'>, <class 'str'>}, 'set': 'NOT A SET'}
-market_segment: {'types': {<class 'str'>}, 'set': {'Corporate', 'Direct', 'Offline TA/TO', 'Undefined', 'Online TA', 'Groups', 'Aviation', 'Complementary'}}
-distribution_channel: {'types': {<class 'str'>}, 'set': {'TA/TO', 'Corporate', 'Direct', 'Undefined', 'GDS'}}
-is_repeated_guest: {'types': {<class 'int'>}, 'set': {'1', '0'}}
+market_segment: {'types': {<class 'str'>}, 'set': {'Direct', 'Online TA', 'Undefined', 'Complementary', 'Corporate', 'Aviation', 'Offline TA/TO', 'Groups'}}
+distribution_channel: {'types': {<class 'str'>}, 'set': {'Direct', 'Undefined', 'Corporate', 'TA/TO', 'GDS'}}
+is_repeated_guest: {'types': {<class 'int'>}, 'set': {'0', '1'}}
 previous_cancellations: {'types': {<class 'int'>}, 'set': 'NOT A SET'}
 previous_bookings_not_canceled: {'types': {<class 'int'>}, 'set': 'NOT A SET'}
-reserved_room_type: {'types': {<class 'str'>}, 'set': {'F', 'C', 'E', 'H', 'B', 'L', 'D', 'P', 'G', 'A'}}
-assigned_room_type: {'types': {<class 'str'>}, 'set': {'F', 'C', 'E', 'H', 'B', 'L', 'D', 'P', 'K', 'G', 'I', 'A'}}
+reserved_room_type: {'types': {<class 'str'>}, 'set': {'L', 'P', 'H', 'E', 'B', 'G', 'C', 'A', 'F', 'D'}}
+assigned_room_type: {'types': {<class 'str'>}, 'set': {'L', 'P', 'H', 'E', 'K', 'B', 'G', 'C', 'A', 'F', 'I', 'D'}}
 booking_changes: {'types': {<class 'int'>}, 'set': 'NOT A SET'}
-deposit_type: {'types': {<class 'str'>}, 'set': {'Refundable', 'No Deposit', 'Non Refund'}}
+deposit_type: {'types': {<class 'str'>}, 'set': {'Refundable', 'Non Refund', 'No Deposit'}}
 agent: {'types': {<class 'float'>, <class 'NoneType'>}, 'set': 'NOT A SET'}
 company: {'types': {<class 'float'>, <class 'NoneType'>}, 'set': 'NOT A SET'}
 days_in_waiting_list: {'types': {<class 'int'>}, 'set': 'NOT A SET'}
-customer_type: {'types': {<class 'str'>}, 'set': {'Transient-Party', 'Transient', 'Contract', 'Group'}}
+customer_type: {'types': {<class 'str'>}, 'set': {'Transient', 'Transient-Party', 'Group', 'Contract'}}
 adr: {'types': {<class 'float'>}, 'set': 'NOT A SET'}
-required_car_parking_spaces: {'types': {<class 'int'>}, 'set': {'8', '0', '2', '3', '1'}}
-total_of_special_requests: {'types': {<class 'int'>}, 'set': {'0', '5', '2', '4', '3', '1'}}
-reservation_status: {'types': {<class 'str'>}, 'set': {'Check-Out', 'No-Show', 'Canceled'}}
+required_car_parking_spaces: {'types': {<class 'int'>}, 'set': {'8', '0', '1', '3', '2'}}
+total_of_special_requests: {'types': {<class 'int'>}, 'set': {'0', '1', '3', '2', '5', '4'}}
+reservation_status: {'types': {<class 'str'>}, 'set': {'Canceled', 'Check-Out', 'No-Show'}}
 reservation_status_date: {'types': {<class 'str'>}, 'set': 'NOT A SET'}
 name: {'types': {<class 'str'>}, 'set': 'NOT A SET'}
 email: {'types': {<class 'str'>}, 'set': 'NOT A SET'}

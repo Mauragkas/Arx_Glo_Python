@@ -8,6 +8,8 @@ except ImportError:
 import json
 import csv
 from decimal import Decimal
+from tqdm import tqdm # progress bar stuff
+import re
 
 DATA_FOLDER = './data/'
 
@@ -22,76 +24,71 @@ def connect_to_db() -> mysql.connector.connection.MySQLConnection:    # Load dat
         print(e)
         return None
 
-def init_db(cursor: mysql.connector.cursor.MySQLCursor):
-    # Create database
-    cursor.execute('CREATE DATABASE IF NOT EXISTS hotel_stuff')
-    print('Database created.')
-    cursor.execute('USE hotel_stuff')
-    print('Using database hotel_stuff.')
-    # Create tables
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS hotel_booking (
-            hotel set('Resort Hotel', 'City Hotel'),
-            is_cancelled TINYINT(1),
-            lead_time INT,
-            arrival_date_year INT,
-            arrival_date_month set('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'),
-            arrival_date_week_number INT,
-            arrival_date_day_of_month INT CHECK (arrival_date_day_of_month BETWEEN 1 AND 31),
-            stays_in_weekend_nights INT,
-            stays_in_week_nights INT,
-            adults INT,
-            children INT,
-            babies INT,
-            meal set('HB', 'SC', 'BB', 'FB'),
-            country VARCHAR(3),
-            market_segment set('Offline TA/TO', 'Complementary', 'Aviation', 'Groups', 'Online TA', 'Direct', 'Corporate'),
-            distribution_channel set('Corporate', 'TA/TO', 'Direct', 'GDS'),
-            is_repeated_guest TINYINT(1),
-            previous_cancellations INT,
-            previous_bookings_not_canceled INT,
-            reserved_room_type set('L', 'C', 'A', 'P', 'E', 'B', 'G', 'H', 'F', 'D'),
-            assigned_room_type set('L', 'C', 'A', 'P', 'K', 'E', 'B', 'G', 'H', 'F', 'I', 'D'),
-            booking_changes INT,
-            deposit_type set('No Deposit', 'Refundable', 'Non Refund'),
-            agent INT,
-            company INT,
-            days_in_waiting_list INT,
-            customer_type set('Transient', 'Contract', 'Transient-Party', 'Group'),
-            adr FLOAT,
-            required_car_parking_spaces INT,
-            total_of_special_requests INT,
-            reservation_status set('Check-Out', 'Canceled', 'No-Show'),
-            reservation_status_date DATE,
-            name VARCHAR(50),
-            email VARCHAR(50),
-            phone_number VARCHAR(15),
-            credit_card VARCHAR(20)
-        )
-    ''')
-    print('Table hotel_booking created.')
+def exe_sql(cursor: mysql.connector.cursor.MySQLCursor, filename):
+    try:
+        with open(filename, 'r') as file:
+            sql_script = file.read()
+
+        statements = re.split(r'(DELIMITER\s+\S+)', sql_script)
+        delimiter = ';'
+
+        for part in statements:
+            part = part.strip()
+            if part.startswith('DELIMITER'):
+                _, new_delimiter = part.split()
+                delimiter = new_delimiter
+            else:
+                if delimiter in part:
+                    sub_statements = part.split(delimiter)
+                else:
+                    sub_statements = [part]
+                
+                for statement in sub_statements:
+                    statement = statement.strip()
+                    if statement:
+                        cursor.execute(statement)
+        print(f'executed sql commands from {filename}')
+
+    except FileNotFoundError:
+        print(f"Error: File '{filename}' not found.")
+    except mysql.connector.Error as err:
+        print(f"MySQL Error: {err}")
+
+def init_db(cursor: mysql.connector.cursor.MySQLCursor, table_filename: str, procedure_filename: str):
+    try:
+        exe_sql(cursor, table_filename)
+        exe_sql(cursor, procedure_filename)
+        print('Database created.')
+    except Exception as e:
+        print(e)
 
 def load_data(cursor: mysql.connector.cursor.MySQLCursor, file_path: str):
-    if get_length(cursor) == 119390:
-        print('Data already loaded.')
-        return
+    total_rows = sum(1 for _ in open(file_path)) - 1  # Count total rows in the CSV file
+    print(f'Total rows: {total_rows}')
 
     with open(file_path) as f:
         data = csv.reader(f)
-        print(f'Data loaded from {file_path}.')
+        print(f'Loading data from {file_path}.')
         next(data)  # Skip header
         print('Header skipped.')
-        for row in data:
-            row = [None if x == "" or x == "Undefined" else x for x in row]  
-            placeholder = ', '.join(['%s'] * len(row))
-            query = f'INSERT INTO hotel_booking VALUES ({placeholder})'
-            try:
-                cursor.execute(query, row)
-            except mysql.connector.Error as e:
-                print(e)
-                print(row)
-                continue
-        print('Data inserted.')
+
+        # tqdm for the progress bar
+        with tqdm(total=total_rows, desc="Loading data", unit="rows") as pbar:  
+            for row in data:
+                row = [None if x == "" or x == "Undefined" else x for x in row]
+                placeholder = ', '.join(['%s'] * len(row))
+                query = f'INSERT IGNORE INTO hotel_booking VALUES ({placeholder})'
+
+                try:
+                    cursor.execute(query, row)
+                except mysql.connector.Error as e:
+                    print(e)
+                    print(row)
+                    continue
+
+                pbar.update(1) # Updating the progress bar  
+
+    print('Data inserted.')
 
 def get_length(cursor: mysql.connector.cursor.MySQLCursor) -> int:
     cursor.execute('SELECT COUNT(*) FROM hotel_booking')

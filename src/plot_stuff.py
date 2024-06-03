@@ -356,7 +356,7 @@ def plot_special_requests(special_requests):
     # Create a dictionary to group special requests by hotel
     hotel_requests = {}
     for hotel_set, request, count_of_rows, percentage in special_requests:
-        hotel_name = hotel_set.pop()  # Get the single hotel name from the set
+        hotel_name = list(hotel_set)[0] 
         if hotel_name not in hotel_requests:
             hotel_requests[hotel_name] = []
         hotel_requests[hotel_name].append((request, count_of_rows, percentage))

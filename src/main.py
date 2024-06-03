@@ -10,16 +10,21 @@ file_path = DATA_FOLDER + 'hotel_booking.csv'
 try:
     conn = db.connect_to_db()
     cur = conn.cursor()
+    print('-' * 50)
 except Exception as e:
     print(e)
     exit(1)
 
 def setup():
     ds.learn_more_about_data(file_path)
+    print('-' * 50)
     try:
-        db.init_db(cur)
+        # db.init_db(cur)
+        db.init_db(cur, DATA_FOLDER + 'tables.sql', DATA_FOLDER + 'procedures.sql')
+        print('-' * 50)
         db.load_data(cursor=cur, file_path=file_path)
         conn.commit()
+        # print('-' * 50)
     except Exception as e:
         print(e)
 
@@ -135,7 +140,7 @@ def main():
 
 if __name__ == "__main__":
     try:
-        # setup()
+        setup()
         main()
         # test()
     except KeyboardInterrupt:
