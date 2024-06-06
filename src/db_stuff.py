@@ -27,6 +27,13 @@ def connect_to_db() -> mysql.connector.connection.MySQLConnection:    # Load dat
     except mysql.connector.Error as e:
         print(e)
         return None
+    
+def select_db(cursor: mysql.connector.cursor.MySQLCursor, db_name: str):
+    try:
+        cursor.execute(f'USE {db_name}')
+        print(f'Using database {db_name}.')
+    except mysql.connector.Error as e:
+        print(e)
 
 def exe_sql(cursor: mysql.connector.cursor.MySQLCursor, filename):
     try:

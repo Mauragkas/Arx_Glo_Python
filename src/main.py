@@ -36,6 +36,8 @@ def test():
 def main():
     print('-' * 50)
 
+    db.select_db(cur, 'hotel_stuff')
+
     plot_buttons = {
         'Bookings vs. Cancellations': lambda: (
             arg1 := db.get_total_bookings(cur),
