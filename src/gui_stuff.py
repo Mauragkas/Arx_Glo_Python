@@ -1,5 +1,9 @@
-import tkinter as tk
-import tkinter.ttk as ttk
+try:
+    import tkinter as tk
+    import tkinter.ttk as ttk
+except ImportError:
+    print("You need to install the tkinter package for your system")
+    exit(1)
 
 import plot_stuff as ps
 

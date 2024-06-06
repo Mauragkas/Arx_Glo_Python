@@ -1,5 +1,10 @@
+import os
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    os.system('pip install matplotlib')
+    import matplotlib.pyplot as plt
 
-import matplotlib.pyplot as plt
 
 def plot_bookings(total_bookings, cancellations_data):
     print('Plotting bookings vs. cancellations...')

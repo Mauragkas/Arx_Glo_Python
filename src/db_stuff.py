@@ -8,7 +8,11 @@ except ImportError:
 import json
 import csv
 from decimal import Decimal
-from tqdm import tqdm # progress bar stuff
+try:
+    from tqdm import tqdm
+except ImportError:
+    os.system('pip install tqdm')
+    from tqdm import tqdm
 import re
 
 DATA_FOLDER = './data/'
