@@ -142,7 +142,14 @@ def main():
 
 if __name__ == "__main__":
     try:
+        # if a file named .setupIsDone exists, skip setup
+        with open('.setupIsDone', 'r') as f:
+            print('Setup is already done')
+    except FileNotFoundError:
         setup()
+        with open('.setupIsDone', 'w') as f:
+            pass
+    try:
         main()
         # test()
     except KeyboardInterrupt:
