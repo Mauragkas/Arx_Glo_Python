@@ -12,9 +12,9 @@ def window(plot_buttons):
     root.title('Hotel Booking Analysis')
 
     # Styling
-    bg_color = "#151515" # Dark grey
-    button_color = "#A91D3A" # Dark red
-    button_fg_color = "#EEEEEE" # Light grey
+    bg_color = "#151515"
+    button_color = "#A91D3A"
+    button_fg_color = "#EEEEEE"
     font_family = "Monospace"
     font_size = 13
 

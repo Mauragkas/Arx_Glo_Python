@@ -98,7 +98,7 @@ def main():
             print(f'{arg1}\n{arg2}'),
             ds.save_as_csv('nightly_stay_rates.csv', [arg1, arg2]),
             db.insert_into_table(cur, conn, 'nightly_stay_rates', arg1),
-            # db.insert_into_table(cur, conn, 'mixed_stay_distributions', arg2), # einai derivative. 3 floats den aksizei na mpoun se table
+            # db.insert_into_table(cur, conn, 'mixed_stay_distributions', arg2), # einai περιτο. 3 floats den aksizei na mpoun se table
             ps.plot_nightly_stay_rates(arg1, arg2),
         ),
         'Room Type Preferences': lambda: (

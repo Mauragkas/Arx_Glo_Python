@@ -101,10 +101,6 @@ def load_data(cursor: mysql.connector.cursor.MySQLCursor, file_path: str):
 
     print('Data inserted.')
 
-def get_length(cursor: mysql.connector.cursor.MySQLCursor) -> int:
-    cursor.execute('SELECT COUNT(*) FROM hotel_booking')
-    return cursor.fetchone()[0]
-
 # Essential Booking Metrics Queries:
 def get_total_bookings(cursor: mysql.connector.cursor.MySQLCursor) -> list:
     print('Getting total bookings...')
